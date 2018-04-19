@@ -228,8 +228,13 @@ namespace Commander.Views
 
         private string getTaskName()
         {
-            var exe = new FileInfo(this.txtExeFile.Text.Trim());
-            return exe.Exists ? "startup-" + exe.Name : string.Empty;
+            if (!string.IsNullOrEmpty(txtExeFile.Text))
+            {
+                var exe = new FileInfo(this.txtExeFile.Text.Trim());
+                if (exe.Exists) return "startup-" + exe.Name;
+            }
+
+            return string.Empty;
         }
 
         private void btnConfig_Click(object sender, EventArgs e)

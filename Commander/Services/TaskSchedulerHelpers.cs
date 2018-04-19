@@ -12,13 +12,16 @@ namespace Commander.Services
         {
             using (var ts = new TaskService())
             {
-                TaskDefinition td = ts.NewTask();
-                td.RegistrationInfo.Description = $"auto start exe file while logon: {exeName} {paramstring}";
-                td.Principal.RunLevel = TaskRunLevel.Highest;
-                td.Actions.Add(new ExecAction(exeName, paramstring, null));
-                td.Triggers.Add(new LogonTrigger()); 
+                TaskDefinition task = ts.NewTask();
+                task.RegistrationInfo.Description = $"auto start exe file while logon: {exeName} {paramstring}";
+                task.Actions.Add(new ExecAction(exeName, paramstring, null));
+                task.Triggers.Add(new LogonTrigger());
 
-                ts.RootFolder.RegisterTaskDefinition(taskName, td);
+                task.Principal.RunLevel = TaskRunLevel.Highest;
+                task.Settings.DisallowStartIfOnBatteries = false;
+                task.Settings.StopIfGoingOnBatteries = false;
+
+                ts.RootFolder.RegisterTaskDefinition(taskName, task);
             }
         }
 
