@@ -43,6 +43,9 @@
       <HintPath>..\packages\Costura.Fody.1.6.2\lib\portable-net+sl+win+wpa+wp\Costura.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.Win32.TaskScheduler">
+      <HintPath>libs\Microsoft.Win32.TaskScheduler.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -65,6 +68,7 @@
     <Compile Include="Services\SimpleHTTPServer.cs" />
     <Compile Include="Services\IEProxyManagment.cs" />
     <Compile Include="Services\ControlExtenssions.cs" />
+    <Compile Include="Services\TaskSchedulerHelpers.cs" />
     <Compile Include="Views\ArgumentsConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>

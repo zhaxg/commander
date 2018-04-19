@@ -206,15 +206,13 @@ namespace Commander.Views
                 return;
             }
 
-            var name = new FileInfo(this.txtExeFile.Text).Name;
-            var registryKey = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
             if (tsbtnAutoStart.Checked)
             {
-                registryKey.DeleteValue(name);
+                TaskSchedulerHelpers.DeleteTask(getTaskName());
             }
             else
             {
-                registryKey.SetValue(name, Assembly.GetEntryAssembly().Location);
+                TaskSchedulerHelpers.SetAutoStartup(getTaskName(), Assembly.GetEntryAssembly().Location);
             }
 
             RefreshAutoStartButtonStatus();
@@ -222,12 +220,16 @@ namespace Commander.Views
 
         private void RefreshAutoStartButtonStatus()
         {
-            if (File.Exists(this.txtExeFile.Text))
+            if (!string.IsNullOrEmpty(getTaskName()))
             {
-                var name = new FileInfo(this.txtExeFile.Text).Name;
-                var registryKey = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
-                tsbtnAutoStart.Checked = !string.IsNullOrEmpty(registryKey.GetValue(name) as string);
+                tsbtnAutoStart.Checked = TaskSchedulerHelpers.IsExist(getTaskName());
             }
+        }
+
+        private string getTaskName()
+        {
+            var exe = new FileInfo(this.txtExeFile.Text.Trim());
+            return exe.Exists ? "startup-" + exe.Name : string.Empty;
         }
 
         private void btnConfig_Click(object sender, EventArgs e)
@@ -328,7 +330,7 @@ namespace Commander.Views
         {
             if (Program.Conifg.Data.IEProxyMode != mode)
             {
-                Program.Conifg.Data.IEProxyMode = "P";
+                Program.Conifg.Data.IEProxyMode = mode;
                 Program.Conifg.SaveChanges();
             }
 
@@ -364,7 +366,7 @@ namespace Commander.Views
 
         private void tsbtnCopyPacUrl_Click(object sender, EventArgs e)
         {
-            var pacurl = SimpleHTTPServer.GetOrStartDefaultServer().PACUrl;      
+            var pacurl = SimpleHTTPServer.GetOrStartDefaultServer().PACUrl;
             notifyIcon1.ShowBalloonTip(3000, string.Empty, pacurl, ToolTipIcon.Info);
             Clipboard.SetText(pacurl);
         }
